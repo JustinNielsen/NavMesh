@@ -25,23 +25,11 @@ public class EnemyController : MonoBehaviour
         if (active)
         {
             //Forward and backward movement
-            transform.position += new Vector3(0, 0, 1) * Time.deltaTime * movementSpeed * Input.GetAxis("Vertical");
+            transform.position += transform.forward * Time.deltaTime * movementSpeed * Input.GetAxis("Vertical");
 
             //Left and right movement
-            transform.position += new Vector3(1, 0, 0) * Time.deltaTime * movementSpeed * Input.GetAxis("Horizontal");
+            transform.position += transform.right * Time.deltaTime * movementSpeed * Input.GetAxis("Horizontal");
 
-        }
-
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            if (cam.Priority > 10)
-            {
-                cam.Priority -= 10;
-            }
-            else
-            {
-                cam.Priority += 10;
-            }
         }
     }
 
@@ -50,10 +38,12 @@ public class EnemyController : MonoBehaviour
         if (isOn)
         {
             active = true;
+            cam.Priority = 15;
         }
         else
         {
             active = false;
+            cam.Priority = 5;
         }
     }
 }

@@ -5,16 +5,16 @@ using Cinemachine;
 
 public class CameraController : MonoBehaviour
 {
-    private GameObject[] Characters;
+    public GameObject[] Characters;
     public int objFocus = 0;
-    public GameObject player;
-    public GameObject enemy;
+    //public GameObject player;
+    //public GameObject enemy;
 
     private CinemachineVirtualCamera cam;
 
     void Start()
     {
-        Characters = new GameObject[2] { player, enemy };
+        //Characters = new GameObject[2] { player, enemy };
         cam = this.GetComponent<CinemachineVirtualCamera>();
     }
 

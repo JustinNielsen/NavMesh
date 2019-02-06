@@ -32,7 +32,7 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         //Change the size of the movementRange based on the maxDistance
-        movementRange.transform.localScale = new Vector3(maxDistance * 2, 0.01f, maxDistance * 2);
+        movementRange.transform.localScale = new Vector3(maxDistance * 2 -0.5f, 0.01f, maxDistance * 2 - 0.5f);
 
         //Get te renderer for the circular range
         rangeRen = movementRange.GetComponent<MeshRenderer>();
@@ -72,7 +72,7 @@ public class PlayerController : MonoBehaviour
     private void NavMeshMovement()
     {
         //Sets the scale of the movement range indicator
-        movementRange.transform.localScale = new Vector3(maxDistance * 2, 0.01f, maxDistance * 2);
+        movementRange.transform.localScale = new Vector3(maxDistance * 2 - 0.5f, 0.01f, maxDistance * 2 - 0.5f);
 
         //Triggers when the player clicks with the left mouse button
         if (Input.GetMouseButtonDown(0))
@@ -118,7 +118,7 @@ public class PlayerController : MonoBehaviour
                 maxDistance -= distance.magnitude;
 
                 //change the size of the movement range circle to coreleate with the max distance
-                movementRange.transform.localScale = new Vector3(maxDistance * 2, 0.01f, maxDistance * 2);
+                movementRange.transform.localScale = new Vector3(maxDistance * 2 - 0.5f, 0.01f, maxDistance * 2 - 0.5f);
             }
             else
             {
@@ -130,10 +130,10 @@ public class PlayerController : MonoBehaviour
     private void KeyboardMovement()
     {
         //Forward and backward movement
-        transform.position += new Vector3(0, 0, 1) * Time.deltaTime * movementSpeed * Input.GetAxis("Vertical");
+        transform.position += transform.forward * Time.deltaTime * movementSpeed * Input.GetAxis("Vertical");
 
         //Left and right movement
-        transform.position += new Vector3(1, 0, 0) * Time.deltaTime * movementSpeed * Input.GetAxis("Horizontal");
+        transform.position += transform.right * Time.deltaTime * movementSpeed * Input.GetAxis("Horizontal");
     }
 
     //Triggers when entering a collider
