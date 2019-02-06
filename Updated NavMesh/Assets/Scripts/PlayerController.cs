@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviour
 
     public float maxDistance;
 
-    public GameObject movementRange;
+    //public GameObject movementRange;
 
     public GameObject waypointPrefab;
 
@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour
 
     public bool navMesh = true;
 
-    MeshRenderer rangeRen;
+    //MeshRenderer rangeRen;
 
     bool active = true;
 
@@ -34,13 +34,17 @@ public class PlayerController : MonoBehaviour
     private Vector3 moveInput;
     private Vector3 moveVelocity;
 
+    public NavMeshPath path;
+
+    private Vector3 target;
+
     private void Start()
     {
         //Change the size of the movementRange based on the maxDistance
-        movementRange.transform.localScale = new Vector3(maxDistance * 2 -0.5f, 0.01f, maxDistance * 2 - 0.5f);
+        //movementRange.transform.localScale = new Vector3(maxDistance * 2 -0.5f, 0.01f, maxDistance * 2 - 0.5f);
 
         //Get te renderer for the circular range
-        rangeRen = movementRange.GetComponent<MeshRenderer>();
+        //rangeRen = movementRange.GetComponent<MeshRenderer>();
 
         //Turn off the NavMesh at the beginning of the game
         ToggleNavMesh(false);
@@ -50,6 +54,9 @@ public class PlayerController : MonoBehaviour
 
         //Get the players RigidBody
         rb = GetComponent<Rigidbody>();
+
+        //Initializes the path
+        path = new NavMeshPath();
     }
 
     // Update is called once per frame
@@ -92,7 +99,15 @@ public class PlayerController : MonoBehaviour
     private void NavMeshMovement()
     {
         //Sets the scale of the movement range indicator
-        movementRange.transform.localScale = new Vector3(maxDistance * 2 - 0.5f, 0.01f, maxDistance * 2 - 0.5f);
+        //movementRange.transform.localScale = new Vector3(maxDistance * 2 - 0.5f, 0.01f, maxDistance * 2 - 0.5f);
+
+        if(target != null)
+        {
+            //Updates the path
+            NavMesh.CalculatePath(transform.position, target, NavMesh.AllAreas, path);
+            //Draws updated path
+            DrawPath(path, 3);
+        }
 
         //Triggers when the player clicks with the left mouse button
         if (Input.GetMouseButtonDown(0))
@@ -119,9 +134,18 @@ public class PlayerController : MonoBehaviour
             //Get the distance of the point from the player
             Vector3 distance = hit.point - transform.position;
 
+            //Sets the target
+            target = hit.point;
+
+            //Creates a NavMeshPath
+            NavMesh.CalculatePath(transform.position, hit.point, NavMesh.AllAreas, path);
+
             //If the point clicked is within the max move distance then place a waypoint and move towards it
-            if (distance.magnitude < maxDistance)
+            if (CalculatePathLength(path) < maxDistance)
             {
+                //Draws the path
+                DrawPath(path, 1);
+
                 //Check if a waypoint is already placed. If so Destroy it.
                 if (waypoint != null)
                 {
@@ -138,12 +162,61 @@ public class PlayerController : MonoBehaviour
                 maxDistance -= distance.magnitude;
 
                 //change the size of the movement range circle to coreleate with the max distance
-                movementRange.transform.localScale = new Vector3(maxDistance * 2 - 0.5f, 0.01f, maxDistance * 2 - 0.5f);
+                //movementRange.transform.localScale = new Vector3(maxDistance * 2 - 0.5f, 0.01f, maxDistance * 2 - 0.5f);
             }
             else
             {
                 Debug.Log("Out of Range");
+
+                //Draws the path
+                DrawPath(path, 2);
             }
+
+            Debug.Log("Path Length: " + CalculatePathLength(path).ToString("n2"));
+        }
+    }
+
+    //Calculates the length of the navMesh Path
+    private float CalculatePathLength(NavMeshPath meshPath)
+    {
+        //If the path has less than 2 corners return 0
+        if(path.corners.Length < 2)
+        {
+            return 0;
+        }
+
+        Vector3 previousCorner = meshPath.corners[0];
+        float totalLength = 0.0f;
+
+        //Calculate the length between all the corners and add them to the totalLength
+        for (int i = 1; i < meshPath.corners.Length; i++)
+        {
+            Vector3 currentCorner = meshPath.corners[i];
+            totalLength += Vector3.Distance(previousCorner, currentCorner);
+            previousCorner = currentCorner;
+        }
+
+        return totalLength;
+    }
+
+    private void DrawPath(NavMeshPath meshPath, int isGood)
+    {
+        LineRenderer line = GetComponent<LineRenderer>();
+
+        if (isGood == 1)
+        {
+            line.material.color = Color.green;
+        }
+        else if (isGood == 2)
+        {
+            line.material.color = Color.red;
+        }
+
+        line.positionCount = meshPath.corners.Length;
+
+        for(int i = 0; i < meshPath.corners.Length; i++)
+        {
+            line.SetPosition(i, path.corners[i]);
         }
     }
 
@@ -183,13 +256,13 @@ public class PlayerController : MonoBehaviour
         //if isOn = true then turn on the range circle indicator, the players NavMeshAgent, and sets bool navMesh to true.
         if (isOn)
         {
-            rangeRen.enabled = true;
+            //rangeRen.enabled = true;
             agent.enabled = true;
             navMesh = true;
         }
         else //Sets everything stated above to false if isOn = false
         {
-            rangeRen.enabled = false;
+            //rangeRen.enabled = false;
             agent.enabled = false;
             navMesh = false;
         }
