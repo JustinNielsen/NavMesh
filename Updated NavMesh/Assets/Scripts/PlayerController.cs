@@ -29,6 +29,11 @@ public class PlayerController : MonoBehaviour
 
     public GameObject turnObj;
 
+    private Rigidbody rb;
+
+    private Vector3 moveInput;
+    private Vector3 moveVelocity;
+
     private void Start()
     {
         //Change the size of the movementRange based on the maxDistance
@@ -42,20 +47,35 @@ public class PlayerController : MonoBehaviour
 
         //Get the TurnBasedSystem script from the turnObj
         turn = turnObj.GetComponent<TurnBasedSystem>();
+
+        //Get the players RigidBody
+        rb = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
+    void Update()
+    {
+        if (active && !navMesh) //if the object is active and navMesh is false calcualte moveVelocity
+        {
+            //Calculate direction and speed of movement based on axis input
+            moveInput = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
+            moveVelocity = moveInput * movementSpeed;
+        }
+    }
+
     void FixedUpdate()
     {
         if (active)
         {
             if (navMesh) // if navMesh = true use navMeshMovement
             {
+                rb.velocity = Vector3.zero;
                 NavMeshMovement();
             }
             else //if navMesh = false use keyboard movement
             {
-                KeyboardMovement();
+                //Apply forces to rigidbody
+                rb.velocity = moveVelocity;
             }
 
             //Check if the player is done moving
@@ -129,11 +149,8 @@ public class PlayerController : MonoBehaviour
 
     private void KeyboardMovement()
     {
-        //Forward and backward movement
-        transform.position += transform.forward * Time.deltaTime * movementSpeed * Input.GetAxis("Vertical");
-
-        //Left and right movement
-        transform.position += transform.right * Time.deltaTime * movementSpeed * Input.GetAxis("Horizontal");
+        moveInput = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
+        moveVelocity = moveInput * movementSpeed;
     }
 
     //Triggers when entering a collider
