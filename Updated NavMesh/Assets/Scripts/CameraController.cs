@@ -1,18 +1,39 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 public class CameraController : MonoBehaviour
 {
-
+    private GameObject[] Characters;
+    public int objFocus = 0;
     public GameObject player;
+    public GameObject enemy;
 
-    public float offsetY = 6.835f;
-    public float offsetZ = -4.751f;
+    private CinemachineVirtualCamera cam;
+
+    void Start()
+    {
+        Characters = new GameObject[2] { player, enemy };
+        cam = this.GetComponent<CinemachineVirtualCamera>();
+    }
 
     // Update is called once per frame
     void Update()
     {
-        transform.position = new Vector3(player.transform.position.x, player.transform.position.y + offsetY, player.transform.position.z + offsetZ);
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            if(objFocus < Characters.Length - 1)
+            {
+                objFocus++;
+            }
+            else
+            {
+                objFocus = 0;
+            }
+
+            cam.Follow = Characters[objFocus].transform;
+            cam.LookAt = Characters[objFocus].transform;
+        }
     }
 }
