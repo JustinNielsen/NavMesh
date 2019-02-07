@@ -1226,10 +1226,8 @@ LineRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: fded45d5eabf31346a231ba609c525f5, type: 2}
-  - {fileID: 2100000, guid: 9a33dd59ec52467439a7290029e11a9a, type: 2}
+  m_RendererPriority: 3
+  m_Materials: []
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
