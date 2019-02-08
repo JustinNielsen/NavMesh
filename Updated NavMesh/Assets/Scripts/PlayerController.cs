@@ -122,8 +122,9 @@ public class PlayerController : MonoBehaviour
     {
         //Sets the scale of the movement range indicator
         //movementRange.transform.localScale = new Vector3(maxDistance * 2 - 0.5f, 0.01f, maxDistance * 2 - 0.5f);
+        Ray ray;
 
-        if(clickedTarget != null)
+        if (clickedTarget != null)
         {
             //Updates the path
             NavMesh.CalculatePath(transform.position, clickedTarget, NavMesh.AllAreas, path);
@@ -135,7 +136,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             //Convertn mousePosition from a screen point to a ray
-            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+            ray = cam.ScreenPointToRay(Input.mousePosition);
 
             //Defines which layers to ignore with the raycast
             int layerMask = 1 << 10;
@@ -148,7 +149,7 @@ public class PlayerController : MonoBehaviour
         if (!isMoving)
         {
             //Convertn mousePosition from a screen point to a ray
-            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+            ray = cam.ScreenPointToRay(Input.mousePosition);
 
             //Defines which layers to ignore with the raycast
             int layerMask = 1 << 10;
